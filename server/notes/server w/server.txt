@@ -1,0 +1,58 @@
+import express from 'express'; //Importando o express
+
+//Criando aplicação
+const app = express();
+
+//Para a aplicação reconhecer dados passados em formato JSON
+app.use(express.json());
+
+const users = [
+    'Diego',
+    'Cleiton', 
+    'Robson',
+    'Gerson',
+    'Braga'
+];
+
+/*
+    Rotas: Endereço completo da requisição
+    Recurso: Qual entidade do sistemas estamos acessando
+
+    - Request params: Parâmetros que vem na própria rota que identificam um recurso. (pegar(Read), alterar(Update), deletar(Delete))
+    - Query param: Parâmetros que vem na própria rota que são, normalmente, opcionais. (filtrar e paginação)
+    - Request Body: Parâmetro para criação e atualização de dados/informações.
+*/
+
+//Listagem de usuários
+app.get('/users', (req, res) => {
+    //console.log('Listagem de usuários');
+    const search = String(req.query.search);
+
+    const usuariosFiltrados = search ? users.filter(user => user.includes(search)) : users;
+
+    return res.json({ usuariosFiltrados });
+});
+
+//Listar usuário único ("perfil")
+app.get('/users/:id', (req, res) => {
+    const id = Number(req.params.id);
+
+    const user = users[id];
+
+    return res.json({ user });
+});
+
+//Cadastro de usuários
+app.post('/users', (req, res) => {
+    const data = req.body;
+
+    const user = {
+        name: data.name,
+        email: data.email
+    };
+
+    return res.json({ user });;
+});
+
+//Porta de acesso da aplicação
+app.listen(3333);
